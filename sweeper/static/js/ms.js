@@ -162,11 +162,11 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	    //top
 	    adjacentLocations.push(clickedLocation-rows);
 	    //top right
-	    if (clickedLocation % 8 !== 0) {
+	    if (clickedLocation % rows !== 0) {
 		adjacentLocations.push(clickedLocation-rows+1);
 	    }
 	    //top left
-	    if (clickedLocation % 8 !== 1) {
+	    if (clickedLocation % rows !== 1) {
 		adjacentLocations.push(clickedLocation-rows-1);
 	    }
 	}
@@ -174,19 +174,19 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	    //bottom
 	    adjacentLocations.push(clickedLocation+rows);
 	    //bottom right
-	    if (clickedLocation % 8 !== 0) {
+	    if (clickedLocation % rows !== 0) {
 		adjacentLocations.push(clickedLocation+rows+1);
 	    }
 	    //bottom left
-	    if (clickedLocation % 8 !== 1) {
+	    if (clickedLocation % rows !== 1) {
 		adjacentLocations.push(clickedLocation+rows-1);
 	    }
 	}
-	if (clickedLocation % 8 !== 0) {
+	if (clickedLocation % rows !== 0) {
 	    //right
 	    adjacentLocations.push(clickedLocation+1);
 	}
-	if (clickedLocation % 8 !== 1) {
+	if (clickedLocation % rows !== 1) {
 	    //left
 	    adjacentLocations.push(clickedLocation-1);
 	}
