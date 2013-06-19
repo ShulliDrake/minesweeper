@@ -52,13 +52,19 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
 
     startNewGame: function() {
 	this.setGrid();
+    },
+
+    resize: function(newSize) {
+	this.set("rows", newSize);
+	this.setGrid();
     }
 
 });
 
 MS.views.MainView = Backbone.View.extend({
     events: {
-	"click .new": "startNewGame"
+	"click .new": "startNewGame",
+	"click .resize": "resize"
     },
 
     initialize: function() {
@@ -71,7 +77,13 @@ MS.views.MainView = Backbone.View.extend({
 
     startNewGame: function() {
 	this.model.startNewGame();
+    },
+
+    resize: function(e) {
+	var size = $(e.target).data("size");
+	this.model.resize(size);
     }
+
 });
 
 MS.views.MineSweeperView = Backbone.View.extend({
@@ -123,8 +135,6 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	if(grid[clickedLocation] === 1) {
 	    //Clicked on a bomb! Reveal all bombs and game over.
 	    this.showBombs(clickedLocation);
-	    this.undelegateEvents();
-
 	} else {
 	    grid[clickedLocation] = -1;
 	    this.checkAdjacent(clickedLocation);
@@ -201,6 +211,7 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	if (clickedLocation) {
 	    this.$(".l"+clickedLocation).addClass("trigger");
 	}
+	this.undelegateEvents();
 	this.$el.addClass("fail");
     },
 
