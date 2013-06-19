@@ -41,12 +41,19 @@
     background-color:#fff;
 }
 
+input.new, input.validate {
+    cursor:pointer;
+}
+input.new {
+    display:block;
+    margin:0 auto;
+}
+
 input.validate {
     width:30px;
     height:30px;
     border:none;
     background:url('/static/img/smile.png') no-repeat center;
-    cursor:pointer;
     margin:10px;
 }
 

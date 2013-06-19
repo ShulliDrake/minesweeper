@@ -21,6 +21,10 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
     },
 
     initialize: function() {
+	this.setGrid();
+    },
+
+    setGrid: function() {
 	//initialze grid
 	var rows = this.get("rows");
 	var gridSize = rows * rows;
@@ -44,16 +48,29 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
 	    }
 	}
 	this.set("grid", grid);
-//	this.set("bombLocations", bombLocations);
+    },
+
+    startNewGame: function() {
+	this.setGrid();
     }
+
 });
 
 MS.views.MainView = Backbone.View.extend({
+    events: {
+	"click .new": "startNewGame"
+    },
+
     initialize: function() {
-	var minesweeperView = new MS.views.MineSweeperView({
+	this.minesweeperView = new MS.views.MineSweeperView({
 	    el: $("#sweeper"),
 	    model: this.model
 	});
+
+    },
+
+    startNewGame: function() {
+	this.model.startNewGame();
     }
 });
 
@@ -66,13 +83,12 @@ MS.views.MineSweeperView = Backbone.View.extend({
     template: _.template("<span class=\"l<%= location %> unchecked\" data-loc=\"<%= location %>\">&nbsp </span>"),
 
     initialize: function() {
-
 	this.render();
+	this.model.bind("change:grid", this.render, this);
     },
 
     render: function() {
 	var rows = this.model.get("rows");
-
 	var gridHtml = "";
 	var rowCount = 0;
 	while (rowCount < rows) {
@@ -85,7 +101,9 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	    gridHtml += "<br />";
 	    rowCount++;
 	}
+	this.$el.removeClass();
 	this.$(".grid").html(gridHtml);
+	this.delegateEvents();
     },
 
     tileClicked: function(e) {
@@ -118,74 +136,48 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	//check bombs in adjacent locations
 	var rows = this.model.get("rows");
 	var adjacentBombCount = 0;
-	console.log("clicked:", clickedLocation);
 	var grid = this.model.get("grid");
 	var adjacentLocations = [];
+	//find adjacent locations
 	if (clickedLocation > rows) {
 	    //top
 	    adjacentLocations.push(clickedLocation-rows);
-	    if (grid[clickedLocation-rows] === 1) {
-		adjacentBombCount++;
- 		console.log('top ', clickedLocation-rows);
-	    }
 	    //top right
 	    if (clickedLocation % 8 !== 0) {
 		adjacentLocations.push(clickedLocation-rows+1);
-		if (grid[clickedLocation-rows+1] === 1) {
-		    adjacentBombCount++;
- 		    console.log('top right');
-		}
 	    }
 	    //top left
 	    if (clickedLocation % 8 !== 1) {
 		adjacentLocations.push(clickedLocation-rows-1);
-		if (grid[clickedLocation-rows-1] === 1) {
-		    adjacentBombCount++;
- 		    console.log('top left');
-		}
 	    }
 	}
 	if (clickedLocation <= (rows * rows - 1)) {
 	    //bottom
 	    adjacentLocations.push(clickedLocation+rows);
-	    if (grid[clickedLocation+rows] === 1) {
- 		console.log('bottom');
-		adjacentBombCount++;
-	    }
 	    //bottom right
 	    if (clickedLocation % 8 !== 0) {
 		adjacentLocations.push(clickedLocation+rows+1);
-		if (grid[clickedLocation+rows+1] === 1) {
- 		    console.log('bottom right');
-		    adjacentBombCount++;
-		}
 	    }
 	    //bottom left
 	    if (clickedLocation % 8 !== 1) {
 		adjacentLocations.push(clickedLocation+rows-1);
-		if (grid[clickedLocation+rows-1] === 1) {
- 		    console.log('bottom left');
-		    adjacentBombCount++;
-		}
 	    }
 	}
 	if (clickedLocation % 8 !== 0) {
 	    //right
 	    adjacentLocations.push(clickedLocation+1);
-	    if (grid[clickedLocation+1] === 1) {
- 		console.log('right');
-		adjacentBombCount++;
-	    }
 	}
 	if (clickedLocation % 8 !== 1) {
 	    //left
 	    adjacentLocations.push(clickedLocation-1);
-	    if (grid[clickedLocation-1] === 1) {
- 		console.log('left');
+	}
+
+	for (var a = 0; a < adjacentLocations.length; a++) {
+	    if (grid[adjacentLocations[a]] === 1) {
+		//found a bomb in adjacent location
 		adjacentBombCount++;
 	    }
 	}
-	console.log(adjacentBombCount);
 
 	if (adjacentBombCount === 0) {
 	    //imitate click on adjacent tiles
@@ -198,6 +190,7 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	this.$(".l"+clickedLocation).removeClass("unchecked");
 
     },
+
     showBombs: function(clickedLocation) {
 	var grid = this.model.get("grid");
 	for (var i = 1; i <= grid.length; i++) {
@@ -205,7 +198,9 @@ MS.views.MineSweeperView = Backbone.View.extend({
 		this.$(".l"+ i).addClass("bomb");
 	    }
 	}
-	this.$(".l"+clickedLocation).addClass("trigger");
+	if (clickedLocation) {
+	    this.$(".l"+clickedLocation).addClass("trigger");
+	}
 	this.$el.addClass("fail");
     },
 
@@ -223,9 +218,9 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	    }
 	}
 	if (success) {
-	    alert("yay");
+	    alert("Congrats! You won!");
 	} else {
-	    this.$el.addClass("fail");
+	    this.showBombs();
 	}
     }
 
