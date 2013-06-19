@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Minesweeper</title>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/ms.css" type="text/css" />
+</head>
+<body>
+
+  <div id="container">
+    <section id="sweeper">    
+      <div class="grid"></div>
+      <input class="validate" type="button" />
+    </section>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+  <script src="{{ STATIC_URL }}js/ms.js"></script>
+</body>
+</html>

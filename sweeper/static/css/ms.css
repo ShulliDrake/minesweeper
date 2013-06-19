@@ -1,0 +1,55 @@
+* {
+    margin:0;
+    padding:0;
+    font-family:arial, sans-serif;
+}
+
+#container {
+
+}
+
+#sweeper {
+    text-align:center;
+    margin:20px;
+}
+
+#sweeper span {
+    display:inline-block;
+    text-align:center;
+    width:25px;
+    height:25px;
+    line-height:25px;
+    box-shadow:0 0 3px #333;
+    cursor:pointer;
+    background-color:#fff;
+}
+
+#sweeper .unchecked {
+    background-color:#ccc;
+}
+
+#sweeper .bomb {
+    background:url('/static/img/bomb.png') no-repeat center / 25px 25px;
+    background-color:#fff;
+}
+
+#sweeper .trigger {
+    background-color:red;
+}
+#sweeper .nobomb {
+    box-shadow:0 0 3px red;
+    background-color:#fff;
+}
+
+input.validate {
+    width:30px;
+    height:30px;
+    border:none;
+    background:url('/static/img/smile.png') no-repeat center;
+    cursor:pointer;
+    margin:10px;
+}
+
+.fail input.validate {
+    background:url('/static/img/cry.png') no-repeat center;
+}
