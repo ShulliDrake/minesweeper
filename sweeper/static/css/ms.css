@@ -46,18 +46,24 @@
     background-color:#fff;
 }
 
-input.new, input.resize {
+input.new, input.resize, input.cheat {
     cursor:pointer;
     background-color:skyblue;
     border:none;
     padding:10px;
 }
 
+input.cheat {
+    background-color:#82caff;
+    padding:5px 10px;
+    color:#555;
+}
+
 input.resize {
     width:70px;
 }
 
-input.new {
+input.new, input.cheat {
     display:block;
     margin:10px auto;
 }
