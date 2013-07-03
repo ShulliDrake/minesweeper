@@ -17,8 +17,7 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
 	rows: 8,
 	numOfBombs: 10,
 	bombLocations: [],
-	grid: [],
-	cheated: 0
+	grid: []
     },
 
     initialize: function() {
@@ -49,8 +48,6 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
 	    }
 	}
 	this.set("grid", grid);
-	//reset cheated counts
-	this.set("cheated", 0);
     },
 
     startNewGame: function() {
@@ -60,11 +57,6 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
     resize: function(newSize) {
 	this.set("rows", newSize);
 	this.setGrid();
-    },
-
-    incrementCheated: function() {
-	var cheated = this.get("cheated") + 1;
-	this.set("cheated", cheated);
     }
 
 });
@@ -97,8 +89,7 @@ MS.views.MainView = Backbone.View.extend({
 MS.views.MineSweeperView = Backbone.View.extend({
     events: {
 	"click span": "tileClicked",
-	"click .validate": "validate",
-	"click .cheat": "revealBomb",
+	"click .validate": "validate"
     },
 
     template: _.template("<span class=\"l<%= location %> unchecked\" data-loc=\"<%= location %>\">&nbsp </span>"),
@@ -242,30 +233,6 @@ MS.views.MineSweeperView = Backbone.View.extend({
 	} else {
 	    this.showBombs();
 	}
-    },
-
-    revealBomb: function() {
-	//cheat button clicked, show one bomb
-	var grid = this.model.get("grid");
-	var uncheckedTiles = this.$(".unchecked");
-	var cheatedCount = this.model.get("cheated");
-
-	if (cheatedCount >= this.model.get("numOfBombs")) {
-	    alert("You can't cheat anymore!");
-	    return false;
-	}
-
-	var randomLocation, isBomb, found;
-	while (!found) {
-	    randomLocation = Math.ceil(Math.random() * uncheckedTiles.length);
-	    isBomb = $(uncheckedTiles[randomLocation]).data("loc");
-	    if (grid[isBomb] === 1) {
-		//show bomb and mark as checked
-		$(uncheckedTiles[randomLocation]).removeClass("unchecked").addClass("bomb");
-		found = true;
-	    }
-	}
-	this.model.incrementCheated();
     }
 
 });
