@@ -14,14 +14,25 @@ $(function(e){
 
 MS.models.MineSweeperModel = Backbone.Model.extend({
     defaults: {
-	rows: 8,
-	numOfBombs: 10,
+	rows: 7,
+	maxBombs: 17,
+	minBombs: 10,
+	numOfBombs: 13,
 	bombLocations: [],
 	grid: []
     },
 
     initialize: function() {
 	this.setGrid();
+    },
+
+    setNumOfBombs: function() {
+	//randomly pick a number of bombs
+	var max = this.get('maxBombs');
+	var min = this.get('minBombs');
+	var num = Math.floor(Math.random() * (max - min + 1)) + min;
+
+	this.set('numOfBombs', num);
     },
 
     setGrid: function() {
@@ -35,8 +46,10 @@ MS.models.MineSweeperModel = Backbone.Model.extend({
 	    grid[i] = 0;
 	}
 
+	//set bombs
+	this.setNumOfBombs();
 	//select bomb locations
-	var bombs = this.get("numOfBombs");
+	var bombs = this.get('numOfBombs');
 	var bombLocations = [];
 
 	while (bombLocations.length < bombs) {
